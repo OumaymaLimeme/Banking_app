@@ -31,7 +31,6 @@ const AuthForm = ({type}:{type:string}) => {
     const router=useRouter();
 
 
-
     // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,11 +52,11 @@ const AuthForm = ({type}:{type:string}) => {
      }
      if(type==='sign-in'){
 
-      const response = await signIn({
-        email: data.email,
-        password: data.password,
+     const response = await signIn({
+      email: data.email,
+      password: data.password,
       })
-      if(response)  router.push('/');
+       if(response)  router.push('/');
 
      }
      
