@@ -22,6 +22,7 @@ import { signIn,signUp }  from '../../lib/actions/user.actions';
 import Link from 'next/link';
 
 import { useRouter } from 'next/navigation';
+import PlaidLink from './PlaidLink';
 
 
 const AuthForm = ({type}:{type:string}) => {
@@ -44,9 +45,23 @@ const AuthForm = ({type}:{type:string}) => {
   const onSubmit= async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
+
      // Sign up with Appwrite & create plaid token
      if(type==='sign-up'){
-      const newuser= await signUp(data);
+      const userData={
+        firstName:data.firstName!,
+        lastName:data.lastName!,
+        address1:data.address1!,
+        state:data.state!,
+        ssn: data.ssn!,
+        email:data.email,
+        password:data.password,
+        postalCode:data.postalCode!,
+        dateOfBirth:data.dateOfBirth!,
+
+        
+      }
+      const newuser= await signUp(userData);
       setUser(newuser);
 
      }
@@ -100,9 +115,15 @@ const AuthForm = ({type}:{type:string}) => {
         </div>
 
         </header>
-        {user ? (
-            <div className="flex flex-col gap-4"></div>
-        )  : (<>
+       { user ? ( 
+            <div className="flex flex-col gap-4">
+            
+            <PlaidLink user={user} variant="primary"/>
+            
+            </div>
+       )  : ( 
+
+      <>
          
      <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -114,7 +135,7 @@ const AuthForm = ({type}:{type:string}) => {
              <CustomInput control={form.control} name='lastName' label="LastName" placeholder="Enter your Last Name" />
              </div>
 
-             <CustomInput control={form.control} name='adress' label="Adress" placeholder="Enter your Adress" />
+             <CustomInput control={form.control} name='address1' label="Adress" placeholder="Enter your Adress" />
             
              <div className='flex gap-4'>
              <CustomInput control={form.control} name='dateOfBirth' label="dateOfBirth" placeholder="YYYY-MM-DD" />
@@ -168,8 +189,8 @@ const AuthForm = ({type}:{type:string}) => {
       </Link>
     </footer>
 
-         </>)
-    }
+         </>
+      ) } 
     </section>
   )
 }
